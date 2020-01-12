@@ -27,21 +27,18 @@
 
     // var_dump($data);
 
-    try {        
-        $kirim = $conn -> prepare("INSERT INTO surat (id_surat, id_user, isi_surat, tanggal_surat, nmr_surat, status) 
-        VALUES (?, ?, ?, ?, ?, 0)");
-        $resultSurat = $kirim -> execute($data1);
-        
-        var_dump($resultSurat);
+    if (move_uploaded_file($tmp_file, '../'.$path)) {
+        try {        
+            $kirim = $conn -> prepare("INSERT INTO surat (id_surat, id_user, isi_surat, tanggal_surat, nmr_surat, status) 
+            VALUES (?, ?, ?, ?, ?, 0)");
+            $kirim -> execute($data1);
+            $sql = $conn -> prepare("INSERT INTO file_surat (id_surat, nm_file, path) VALUES (?, ?, ?)");
+            $sql -> execute($data);
 
-        $sql = $conn -> prepare("INSERT INTO file_surat (id_surat, nm_file, path) VALUES (?, ?, ?)");
-        $resultFile = $sql -> execute($data);
-        
-        var_dump($resultFile);
-    } catch (Exception $th) {
-        echo $th->getMessage();
+            header('Location: ../pages/surat/');
+        } catch (Exception $th) {
+            echo $th->getMessage();
+        }
     }
-
-    move_uploaded_file($tmp_file, '../'.$path);
     
 ?>
